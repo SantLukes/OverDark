@@ -1,0 +1,89 @@
+body {
+    background: #020617;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 350px;
+    background: #111827;
+    border-radius: 12px;
+    border: 1px solid #1f2937;
+}
+
+.login-card h3,
+.login-card p {
+    text-align: center;
+}
+
+.form-control {
+    background-color: #020617 !important;
+    border: 1px solid #1f2937;
+    color: white;
+}
+
+.form-control::placeholder {
+    color: #6c757d;
+}
+
+.form-control:focus {
+    background-color: #020617 !important;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+}
+
+.btn-primary {
+    background: #7c3aed;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: #6d28d9;
+}
+
+.text-purple {
+    color: #8b5cf6;
+}
+
+.branding-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top, #0f172a, #020617);
+}
+
+.logo-top {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    opacity: 0.08;
+}
+
+.branding-center {
+    text-align: center;
+    max-width: 500px;
+}
+
+.branding-center h1 {
+    font-size: 42px;
+    color: #8b5cf6;
+}
+
+.branding-center p {
+    color: #9ca3af;
+    margin-top: 10px;
+    line-height: 1.5;
+}
+
+.branding-footer {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: #6c757d;
+}
