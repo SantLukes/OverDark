@@ -1,0 +1,43 @@
+{
+    "name": "santlukes/overdark",
+    "description": "OverDark - sistema pessoal de acompanhamento financeiro (receitas, gastos, cartão de crédito e investimentos).",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "psr/log": "^3"
+    },
+    "autoload": {
+        "psr-4": {
+            "OverDark\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OverDark\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "php -S 0.0.0.0:8000 -t public public/index.php"
+        ],
+        "test": "phpunit",
+        "analyse": "phpstan analyse --memory-limit=512M",
+        "check": [
+            "@analyse",
+            "@test"
+        ],
+        "migrate": "php bin/console migrate"
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.0"
+        },
+        "sort-packages": true
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2",
+        "phpunit/phpunit": "^11"
+    }
+}

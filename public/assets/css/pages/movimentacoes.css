@@ -1,0 +1,115 @@
+/* Movimentações — filtro de mês, card de status, badges por tipo e parcelamento. */
+
+.month-filter select {
+    min-width: 170px;
+    min-height: 42px;
+    padding: 0 36px 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-surface);
+    color: var(--text-main);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color-scheme: dark;
+    cursor: pointer;
+}
+
+.month-filter select:hover {
+    border-color: var(--border-strong);
+}
+
+/* ---------- Card de status do fluxo ---------- */
+
+.status-card .status-row {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-card .status-row h2 {
+    margin: 0 0 2px;
+    font-size: 20px;
+}
+
+.status-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 900;
+    flex-shrink: 0;
+}
+
+.status-row.positive .status-icon {
+    color: var(--success);
+    background: var(--success-tint);
+}
+
+.status-row.positive h2 {
+    color: var(--success);
+}
+
+.status-row.negative .status-icon {
+    color: var(--danger);
+    background: var(--danger-tint);
+}
+
+.status-row.negative h2 {
+    color: var(--danger);
+}
+
+/* ---------- Badges por tipo de movimentação ---------- */
+
+.type-badge.receita {
+    background: var(--success-tint);
+    border-color: rgba(111, 191, 152, 0.2);
+    color: var(--success);
+}
+
+.type-badge.gasto {
+    background: var(--danger-tint);
+    border-color: rgba(217, 112, 124, 0.2);
+    color: var(--danger-soft);
+}
+
+.type-badge.cartao {
+    background: var(--brand-tint);
+    border-color: rgba(177, 150, 240, 0.22);
+    color: var(--brand-light);
+}
+
+/* ---------- Etiqueta "3/10" de parcela ---------- */
+
+.installment-tag {
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Parcelamento (cartão de crédito) ---------- */
+
+.installments-grid {
+    padding: 14px;
+    border: 1px dashed var(--border-strong);
+    border-radius: 14px;
+    background: rgba(177, 150, 240, 0.04);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+@media (max-width: 720px) {
+    .installments-grid {
+        grid-template-columns: 1fr;
+    }
+}

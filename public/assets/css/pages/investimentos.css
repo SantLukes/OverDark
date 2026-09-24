@@ -1,0 +1,71 @@
+/* Investimentos — gráfico de patrimônio, composição por tipo e badges por classe de ativo. */
+
+:root {
+    --reserve: #a8b1c2;
+    --fixed: #7fa7d9;
+    --funds: #cbb6fa;
+    --stocks: #d9a276;
+    --crypto: #d6c27a;
+}
+
+.content-grid {
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.85fr);
+    gap: 16px;
+}
+
+.chart-panel {
+    height: 400px;
+}
+
+.chart-panel canvas {
+    width: 100% !important;
+    height: calc(100% - 52px) !important;
+}
+
+/* ---------- Composição por tipo ---------- */
+
+.type-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.type-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.type-row {
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    background: var(--bg-input);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.type-row strong {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Badges por classe de ativo ---------- */
+
+.type-badge {
+    min-width: 96px;
+}
+
+.type-badge.reserva { background: rgba(168, 177, 194, 0.1); color: var(--reserve); }
+.type-badge.renda-fixa { background: rgba(127, 167, 217, 0.1); color: var(--fixed); }
+.type-badge.fundos { background: rgba(184, 171, 203, 0.1); color: var(--funds); }
+.type-badge.acoes { background: rgba(217, 162, 118, 0.1); color: var(--stocks); }
+.type-badge.cripto { background: rgba(214, 194, 122, 0.1); color: var(--crypto); }
+
+@media (max-width: 1100px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}

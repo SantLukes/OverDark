@@ -1,0 +1,10 @@
+parameters:
+    level: 8
+    paths:
+        - src
+        - config
+        - bootstrap
+        - tests
+    excludePaths:
+        # Templates usam $this = Template e variáveis injetadas por extract().
+        - src/Modules/*/Views/*

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         failOnWarning="true"
+         failOnRisky="true">
+    <php>
+        <!-- Testes de feature usam um banco separado, recriado a cada execução. -->
+        <env name="DB_DATABASE" value="overdark_test" force="true"/>
+        <env name="APP_DEBUG" value="true" force="true"/>
+        <!-- Testes nunca escrevem no log real nem enviam ao Slack. -->
+        <env name="LOG_PATH" value="storage/logs/testes.log" force="true"/>
+        <env name="SLACK_WEBHOOK_URL" value="" force="true"/>
+        <!-- Lock wait curto para o teste da simulação de concorrência não demorar. -->
+        <env name="DB_LOCK_WAIT_TIMEOUT" value="1" force="true"/>
+    </php>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
+</phpunit>

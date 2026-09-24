@@ -1,0 +1,18 @@
+# Dependências
+/vendor/
+
+# Ambiente (copie .env.example para .env)
+.env
+
+# Logs
+/storage/logs/*
+!/storage/logs/.gitkeep
+
+# Caches de ferramentas
+/.phpunit.cache/
+.phpunit.result.cache
+
+# IDE / SO
+/.idea/
+/.vscode/
+.DS_Store

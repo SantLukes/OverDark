@@ -1,0 +1,152 @@
+/* Página de erro — standalone (sem header), usa os tokens de base.css. */
+
+.error-shell {
+    min-height: 100vh;
+    padding: 24px;
+    display: grid;
+    place-items: center;
+}
+
+.error-card {
+    width: min(540px, 100%);
+    padding: 36px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--bg-surface);
+    box-shadow: var(--shadow);
+}
+
+.error-brand {
+    margin-bottom: 32px;
+}
+
+.error-status {
+    margin: 0 0 6px;
+    color: var(--danger-soft);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.error-card h1 {
+    margin: 0 0 8px;
+    color: var(--text-main);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.error-description,
+.error-hint {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.error-code-box {
+    margin: 24px 0 10px;
+    padding: 16px 18px;
+    border: 1px dashed var(--border-strong);
+    border-radius: 16px;
+    background: var(--bg-input);
+}
+
+.error-code-box small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.error-code-row {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.error-code-row code {
+    color: var(--text-main);
+    font-family: ui-monospace, "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.error-meta {
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+.error-copy {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--brand-light);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.error-copy:hover {
+    background: var(--brand-tint);
+}
+
+.error-actions {
+    margin-top: 28px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.error-actions .primary-button,
+.error-actions .ghost-button {
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 12px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.error-actions .primary-button {
+    border: none;
+    background: var(--brand);
+    color: var(--brand-ink);
+}
+
+.error-actions .primary-button:hover {
+    background: var(--brand-light);
+}
+
+.error-actions .ghost-button {
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text-main);
+}
+
+.error-debug {
+    margin-top: 24px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.error-debug pre {
+    margin-top: 10px;
+    max-height: 280px;
+    overflow: auto;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--bg-main);
+    color: var(--danger-soft);
+    white-space: pre-wrap;
+}

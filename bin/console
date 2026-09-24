@@ -1,0 +1,163 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Comandos de manutenção. Rode dentro do container:
+ *   docker compose exec app bin/console <comando>
+ */
+
+use OverDark\Core\Database\Migrator;
+use OverDark\Core\Logging\Handler\CurlSlackTransport;
+use OverDark\Core\Logging\Handler\SlackWebhookHandler;
+use OverDark\Core\Logging\LogContext;
+use OverDark\Core\Logging\LogRecord;
+use OverDark\Core\Validation\ValidationException;
+use OverDark\Modules\Auth\Application\CriarUsuario;
+use Psr\Log\LoggerInterface;
+
+/** @var \OverDark\Core\Application $app */
+$app = require dirname(__DIR__) . '/bootstrap/app.php';
+$container = $app->container();
+
+$comando = $argv[1] ?? 'ajuda';
+
+// Logs gerados por comandos saem com correlation_id "cli_xxxxxx".
+$container->get(LogContext::class)->iniciar(null, 'cli');
+/** @var LoggerInterface $logger */
+$logger = $container->get(LoggerInterface::class);
+
+$lerSenha = static function (): string {
+    fwrite(STDOUT, 'Senha: ');
+    $tty = stream_isatty(STDIN);
+    if ($tty) {
+        shell_exec('stty -echo');
+    }
+    $senha = trim((string) fgets(STDIN));
+    if ($tty) {
+        shell_exec('stty echo');
+        fwrite(STDOUT, PHP_EOL);
+    }
+
+    return $senha;
+};
+
+/**
+ * Formata uma linha JSON do log para leitura humana no terminal.
+ */
+$formatarLog = static function (string $linha): string {
+    $log = json_decode($linha, true);
+    if (!is_array($log)) {
+        return $linha;
+    }
+
+    $cores = ['debug' => '90', 'info' => '32', 'notice' => '36', 'warning' => '33', 'error' => '31', 'critical' => '41;97', 'alert' => '41;97', 'emergency' => '41;97'];
+    $nivel = (string) ($log['level'] ?? 'info');
+    $cor = $cores[$nivel] ?? '0';
+    $hora = substr((string) ($log['timestamp'] ?? ''), 11, 12);
+
+    $saida = sprintf("\033[90m%s\033[0m \033[%sm%-8s\033[0m \033[1m%s\033[0m", $hora, $cor, strtoupper($nivel), $log['event'] ?? '?');
+
+    unset($log['timestamp'], $log['level'], $log['event']);
+    foreach ($log as $campo => $valor) {
+        if ($valor === null) {
+            continue;
+        }
+        if ($campo === 'excecao' && is_array($valor)) {
+            $valor = ($valor['classe'] ?? '') . ': ' . ($valor['mensagem'] ?? '') . ' @ ' . ($valor['arquivo'] ?? '');
+        }
+        $texto = is_scalar($valor) ? (string) $valor : (string) json_encode($valor, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $saida .= sprintf("\n    \033[90m%-24s\033[0m %s", $campo, $texto);
+    }
+
+    return $saida . "\n";
+};
+
+try {
+    switch ($comando) {
+        case 'migrate':
+            $executadas = (new Migrator($container->get(PDO::class), dirname(__DIR__) . '/database/migrations'))->migrate();
+            $logger->info('migrations_executadas', [
+                'operacao' => 'migrar_banco',
+                'status' => 'SUCCESS',
+                'integracao' => 'MySQL',
+                'migrations' => $executadas,
+                'quantidade' => count($executadas),
+            ]);
+            echo $executadas === []
+                ? "Nada a migrar: banco já está atualizado.\n"
+                : 'Migrations executadas:' . PHP_EOL . '  - ' . implode(PHP_EOL . '  - ', $executadas) . PHP_EOL;
+            break;
+
+        case 'usuario:criar':
+            [, , $nome, $email] = array_pad($argv, 4, '');
+            if ($nome === '' || $email === '') {
+                fwrite(STDERR, "Uso: bin/console usuario:criar \"Nome\" email@exemplo.com [senha]\n");
+                exit(1);
+            }
+            $senha = $argv[4] ?? $lerSenha();
+            $usuario = $container->get(CriarUsuario::class)->executar($nome, $email, $senha);
+            printf("Usuário #%d criado: %s <%s>\n", $usuario->id, $usuario->nome, $usuario->email);
+            break;
+
+        case 'logs:tail':
+            /** @var array{arquivo: string} $config */
+            $config = require dirname(__DIR__) . '/config/logging.php';
+            $arquivo = $config['arquivo'];
+            $quantas = (int) ($argv[2] ?? 20);
+
+            if (!is_file($arquivo)) {
+                touch($arquivo);
+            }
+
+            $linhas = file($arquivo, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+            foreach (array_slice($linhas, -$quantas) as $linha) {
+                echo $formatarLog($linha);
+            }
+
+            echo "\033[90m— acompanhando {$arquivo} (Ctrl+C para sair) —\033[0m\n";
+            $handle = fopen($arquivo, 'r');
+            fseek($handle, 0, SEEK_END);
+            while (true) { // @phpstan-ignore while.alwaysTrue
+                $linha = fgets($handle);
+                if ($linha === false) {
+                    usleep(200_000);
+                    fseek($handle, 0, SEEK_CUR);
+                    continue;
+                }
+                echo $formatarLog(rtrim($linha));
+            }
+
+        case 'slack:testar':
+            /** @var array{slack: array{webhook: string}} $config */
+            $config = require dirname(__DIR__) . '/config/logging.php';
+            if ($config['slack']['webhook'] === '') {
+                fwrite(STDERR, "SLACK_WEBHOOK_URL não configurado no .env.\n");
+                exit(1);
+            }
+            $contexto = $container->get(LogContext::class);
+            $record = new LogRecord(new DateTimeImmutable(), 'info', 'slack_integracao_testada', 'testar_integracao', 'SUCCESS', $contexto->correlationId(), ['integracao' => 'Slack']);
+            (new SlackWebhookHandler($config['slack']['webhook'], new CurlSlackTransport(), 'debug'))->registrar($record);
+            echo "Mensagem enviada ao Slack (correlation_id {$record->correlationId}).\n";
+            break;
+
+        default:
+            echo <<<TXT
+            OverDark — comandos disponíveis:
+
+              migrate                                   Cria/atualiza as tabelas do banco
+              usuario:criar "Nome" email [senha]        Cria um usuário (pede a senha se omitida)
+              logs:tail [linhas]                        Mostra os logs formatados e acompanha em tempo real
+              slack:testar                              Envia uma mensagem de teste ao webhook do Slack
+
+            TXT;
+    }
+} catch (ValidationException $e) {
+    fwrite(STDERR, 'Erro: ' . implode(' ', $e->errors) . PHP_EOL);
+    exit(1);
+} catch (Throwable $e) {
+    $logger->error('comando_falhou', ['operacao' => $comando, 'status' => 'FAILED', 'motivo' => (new ReflectionClass($e))->getShortName(), 'exception' => $e]);
+    fwrite(STDERR, 'Erro: ' . $e->getMessage() . PHP_EOL);
+    exit(1);
+}
