@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OverDark\Core\Logging\Handler;
 
+use OverDark\Core\Logging\ExibicaoHumana;
 use OverDark\Core\Logging\Level;
 use OverDark\Core\Logging\LogRecord;
 
@@ -88,9 +89,11 @@ final class SlackWebhookHandler implements Handler
                 continue;
             }
 
-            $linhas[(string) $campo] = is_scalar($valor)
-                ? (string) $valor
-                : (json_encode($valor, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '');
+            [$nome, $exibido] = ExibicaoHumana::campo((string) $campo, $valor);
+
+            $linhas[$nome] = is_scalar($exibido)
+                ? (string) $exibido
+                : (json_encode($exibido, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '');
         }
 
         return $linhas;

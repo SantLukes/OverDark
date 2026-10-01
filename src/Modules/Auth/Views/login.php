@@ -51,7 +51,7 @@ $this->layout('layouts/guest', [
             </form>
         </div>
 
-        <p class="login-footnote">OverDark · controle financeiro pessoal</p>
+        <p class="login-footnote">OverDark · Controle financeiro pessoal</p>
     </section>
 
     <aside class="login-brand-panel" aria-hidden="true">

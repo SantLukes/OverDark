@@ -40,6 +40,8 @@ final class SlackWebhookHandlerTest extends TestCase
         self::assertStringContainsString('status         : 503', $corpo);
         self::assertStringContainsString('correlation_id : req_884a1c', $corpo);
         self::assertStringContainsString('integracao     : MySQL', $corpo);
+        self::assertStringContainsString('valor          : R$ 3.999,99', $corpo, 'Centavos exibidos em reais.');
+        self::assertStringNotContainsString('valor_centavos', $corpo);
         self::assertStringNotContainsString('trace', $corpo, 'Stack trace fica só no arquivo.');
         self::assertStringContainsString('*OverDark* · local', $blocos[2]['elements'][0]['text']);
     }
@@ -53,7 +55,7 @@ final class SlackWebhookHandlerTest extends TestCase
             'conectar_banco',
             503,
             'req_884a1c',
-            ['motivo' => 'conexao_recusada', 'integracao' => 'MySQL', 'trace' => ['a', 'b']],
+            ['motivo' => 'conexao_recusada', 'integracao' => 'MySQL', 'valor_centavos' => 399999, 'trace' => ['a', 'b']],
         );
     }
 

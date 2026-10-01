@@ -71,7 +71,7 @@ $mostrarCodigo = $status >= 500 || $status === 419;
 
 <?php if ($exception !== null): ?>
         <details class="error-debug">
-            <summary>Detalhes técnicos (APP_DEBUG=true — nunca em produção)</summary>
+            <summary>Detalhes técnicos</summary>
             <pre><?= $this->e($exception::class . ': ' . $exception->getMessage() . "\n\n" . $exception->getTraceAsString()) ?></pre>
         </details>
 <?php endif; ?>

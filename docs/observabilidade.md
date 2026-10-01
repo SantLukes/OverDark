@@ -165,6 +165,7 @@ StructuredLogger ── monta o LogRecord (contrato + LogContext + Sanitizer)
       └── SlackWebhookHandler    canal do Slack              (≥ LOG_SLACK_LEVEL, só se SLACK_WEBHOOK_URL existir)
 ```
 
+- **Gravado para a máquina, exibido para a pessoa:** o arquivo guarda o dado bruto (`valor_centavos: 555`, exato e fácil de filtrar ou somar). No Slack e no `logs:tail`, todo campo `*_centavos` aparece em reais: `valor : R$ 5,55` (`Core\Logging\ExibicaoHumana`).
 - **Um destino que falha nunca derruba a aplicação.** Se o Slack não responder em 3s, a requisição segue e os outros destinos recebem um `log_destino_falhou`.
 - Formato Slack: título `🚨 CRITICAL · banco_indisponivel`, bloco `campo : valor` (igual ao slide) e rodapé com app, ambiente e horário.
 

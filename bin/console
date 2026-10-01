@@ -9,6 +9,7 @@ declare(strict_types=1);
  */
 
 use OverDark\Core\Database\Migrator;
+use OverDark\Core\Logging\ExibicaoHumana;
 use OverDark\Core\Logging\Handler\CurlSlackTransport;
 use OverDark\Core\Logging\Handler\SlackWebhookHandler;
 use OverDark\Core\Logging\LogContext;
@@ -67,6 +68,7 @@ $formatarLog = static function (string $linha): string {
         if ($campo === 'excecao' && is_array($valor)) {
             $valor = ($valor['classe'] ?? '') . ': ' . ($valor['mensagem'] ?? '') . ' @ ' . ($valor['arquivo'] ?? '');
         }
+        [$campo, $valor] = ExibicaoHumana::campo((string) $campo, $valor);
         $texto = is_scalar($valor) ? (string) $valor : (string) json_encode($valor, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $saida .= sprintf("\n    \033[90m%-24s\033[0m %s", $campo, $texto);
     }

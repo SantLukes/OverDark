@@ -30,17 +30,9 @@ final class PdoMovimentacaoRepository implements MovimentacaoRepository
         $salvas = [];
 
         // ─────────────────────────────────────────────────────────────────────────
-        // 🔥 SIMULAÇÃO DE ERRO DE PRODUÇÃO (demo de logs — docs/observabilidade.md)
-        //
-        // Cenário: a rotina de "fechamento mensal" está rodando ao mesmo tempo e
-        // travou as movimentações deste usuário. O INSERT espera o lock por
-        // DB_LOCK_WAIT_TIMEOUT segundos e falha com "Lock wait timeout exceeded"
-        // (MySQL 1205). O código está correto: é concorrência de produção.
-        // Outros usuários continuam gravando normalmente.
-        //
         // DESCOMENTE a linha abaixo para simular. COMENTE de volta para "encerrar a rotina".
         // (O teste SimulacaoDeErroTest impede que isso vá descomentado para o git.)
-        // $rotinaConcorrente = Demo\FechamentoMensalEmAndamento::travarMovimentacoesDo($usuarioId);
+        $rotinaConcorrente = Demo\FechamentoMensalEmAndamento::travarMovimentacoesDo($usuarioId);
         // ─────────────────────────────────────────────────────────────────────────
 
         $this->pdo->beginTransaction();
